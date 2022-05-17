@@ -20,8 +20,9 @@ def get_collection(collection_name, mongodb_config=None, suffix=None):
 
 
 def get_database(db_name, host, port, username, password):
+    # print(db_name, host, port, username, password)
     db = pymongo.MongoClient(host, int(port), username=username,
-                             password=password, authSource=db_name)[db_name]
+                             password=password, authSource='admin')[db_name]
     return db
 
 
@@ -63,7 +64,7 @@ def get_mongodb_config(path=SETTINGS.DATABASE.MONGODB_CONFIG_PATH):
             if len(line.strip()) > 0:
                 split = line.split(':')
                 key = split[0].strip()
-                value = split[1].strip()
+                value = ':'.join([s.strip() for s in split[1:]])
                 access_dict[key] = value
 
     required_entries = ['username', 'password', 'port', 'host', 'database']
@@ -76,6 +77,7 @@ def get_mongodb_config(path=SETTINGS.DATABASE.MONGODB_CONFIG_PATH):
     db_host = access_dict['host']
     db_username = access_dict['username']
     db_password = access_dict['password']
+    # print(access_dict)
 
     return {'password': db_password, 'username': db_username, 'host': db_host, 'db_name': db_name, 'port': db_port}
 
